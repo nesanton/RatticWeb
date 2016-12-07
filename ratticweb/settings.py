@@ -26,6 +26,8 @@ config = RawConfigParser()
 config.readfp(open('conf/defaults.cfg'))
 CONFIGURED_BY = config.read(['conf/local.cfg', '/etc/ratticweb.cfg'])
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def confget(section, var, default):
     try:
@@ -70,35 +72,12 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-# A tuple of callables that are used to populate the context in
-# RequestContext. These callables take a request object as their
-# argument and return a dictionary of items to be merged into
-# the context.
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.core.context_processors.tz",
-    "django.contrib.messages.context_processors.messages",
-    'ratticweb.context_processors.base_template_reqs',
-    'ratticweb.context_processors.logo_selector',
-)
-
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    # 'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -132,11 +111,39 @@ STATIC_URL = urljoin(RATTIC_ROOT_URL, 'static/')
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'ratticweb.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
+TEMPLATE_DEBUG = True
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+        # 'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                # "django.core.context_processors.debug",
+                # "django.core.context_processors.i18n",
+                # "django.core.context_processors.media",
+                # "django.core.context_processors.static",
+                # "django.core.context_processors.tz",
+                'ratticweb.context_processors.base_template_reqs',
+                'ratticweb.context_processors.logo_selector',
+            ],
+            'loaders': (
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+                # 'django.template.loaders.eggs.Loader',
+            ),
+            'debug': True,
+        },
+    },
+]
 
 LOCAL_APPS = (
     # Sub apps
@@ -161,12 +168,9 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
-    'south',
     'tastypie',
-    'kombu.transport.django',
-    'djcelery',
     'database_files',
-    'social_auth',
+#    'social_auth',
 ) + LOCAL_APPS
 
 if os.environ.get("ENABLE_TESTS") == "1":
@@ -257,8 +261,7 @@ CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 ###############################
 
 # [ratticweb]
-DEBUG = confgetbool('ratticweb', 'debug', False)
-TEMPLATE_DEBUG = DEBUG
+DEBUG = True # confgetbool('ratticweb', 'debug', False)
 TIME_ZONE = config.get('ratticweb', 'timezone')
 SECRET_KEY = config.get('ratticweb', 'secretkey')
 ALLOWED_HOSTS = [config.get('ratticweb', 'hostname'), 'localhost']
@@ -389,11 +392,11 @@ else:
     USE_LDAP_GROUPS = False
 
 # [goauth2]
-GOAUTH2_ENABLED = 'goauth2' in config.sections()
+GOAUTH2_ENABLED = False # TEMP 'goauth2' in config.sections()
 
 if GOAUTH2_ENABLED:
     AUTHENTICATION_BACKENDS = (
-        'social_auth.backends.google.GoogleOAuth2Backend',
+        # TEMP 'social_auth.backends.google.GoogleOAuth2Backend',
         'django.contrib.auth.backends.ModelBackend',
     )
 

@@ -1,28 +1,23 @@
-Django>=1.6,<1.7
-Markdown>=2.4,<2.5
-Pillow>=2.3,<2.4
-South>=0.8,<0.9
-django-auth-ldap==1.1.8
+# It definitely works with these,
+# but I doubt that this is a proper requirements file
+# Hopefully somebody fixes this. 
+Django==1.10.4
+Markdown==2.6.7
+Pillow==3.4.2
+django-auth-ldap==1.2.8
 django-database-files==0.1
-django-otp==0.2.7
-django-tastypie==0.9.15
-django-two-factor-auth==0.5.0
-django-user-sessions==0.1.3
-mimeparse>=0.1,<0.2
-pyasn1==0.1.7
-pycrypto>=2.6,<2.7
-python-dateutil>=2.1,<2.2
-python-ldap>=2.4,<2.5
-python-mimeparse==0.1.4
-six>=1.6,<1.7
+django-otp==0.3.8
+django-tastypie==0.13.3
+django-two-factor-auth==1.4.0
+django-user-sessions==1.3.1
+mimeparse==0.1.3
+python-ldap==2.4.28
+six==1.10.0
 urldecode==0.1
-wsgiref==0.1.2
 keepassdb==0.2.1
-db_backup==0.1.3
-boto==2.26.1
-lxml==3.3.3
-celery>=3.1,<3.2
-django-celery>=3.1,<3.2
+db-backup==0.3.1
+boto==2.43.0
+celery==4.0.0
+django-celery==4.0.0
 importlib
-django-social-auth>=0.7.9
-paramiko==1.15.2
+paramiko==2.0.2
