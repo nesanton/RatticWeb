@@ -23,6 +23,19 @@ class Tag(models.Model):
         return Cred.objects.visible(user).filter(tags=self).count()
 
 
+class Extra(models.Model):
+    name = models.CharField(max_length=64)
+    tag = models.ForeignKey(Tag)
+
+    def __unicode__(self):
+        return self.name
+
+
+class ExtraField(models.Model):
+    extra = models.ForeignKey(Extra)
+    value = models.CharField(max_length=250, blank=True, null=True, db_index=True)
+
+
 class CredIconAdmin(admin.ModelAdmin):
     list_display = ('name', 'filename')
 
@@ -71,7 +84,7 @@ class SearchManager(models.Manager):
 class Cred(models.Model):
     METADATA = ('description', 'descriptionmarkdown', 'group', 'groups', 'tags', 'iconname', 'latest', 'id', 'modified', 'attachment_name', 'ssh_key_name')
     SORTABLES = ('title', 'username', 'group', 'id', 'modified')
-    APP_SET = ('is_deleted', 'latest', 'modified', 'attachment_name', 'ssh_key_name')
+    APP_SET = ('is_deleted', 'latest', 'modified', 'attachment_name', 'ssh_key_name', 'extrafields')
     objects = SearchManager()
 
     # User changable fields
@@ -87,6 +100,7 @@ class Cred(models.Model):
     iconname = models.CharField(verbose_name=_('Icon'), default='Key.png', max_length=64)
     ssh_key = SizedFileField(verbose_name=_('SSH key'), storage=CredAttachmentStorage(), max_upload_size=settings.RATTIC_MAX_ATTACHMENT_SIZE, null=True, blank=True, upload_to='not required')
     attachment = SizedFileField(verbose_name=_('Attachment'), storage=CredAttachmentStorage(), max_upload_size=settings.RATTIC_MAX_ATTACHMENT_SIZE, null=True, blank=True, upload_to='not required')
+    extrafields = models.ManyToManyField(ExtraField, blank=True, null=True, default=None)
 
     # Application controlled fields
     is_deleted = models.BooleanField(default=False, db_index=True)
@@ -207,6 +221,7 @@ class CredAudit(models.Model):
     CREDPASSVIEW = 'P'
     CREDDELETE = 'D'
     CREDSCHEDCHANGE = 'S'
+    CREDEXTRACHANGE = 'E'
     CREDAUDITCHOICES = (
         (CREDADD, _('Added')),
         (CREDCHANGE, _('Changed')),
@@ -216,6 +231,7 @@ class CredAudit(models.Model):
         (CREDDELETE, _('Deleted')),
         (CREDSCHEDCHANGE, _('Scheduled For Change')),
         (CREDPASSVIEW, _('Password Viewed')),
+        (CREDEXTRACHANGE, _('Extra Fields Changed')),
     )
 
     audittype = models.CharField(max_length=1, choices=CREDAUDITCHOICES)
