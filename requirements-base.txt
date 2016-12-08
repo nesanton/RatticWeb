@@ -1,7 +1,7 @@
 # It definitely works with these,
 # but I doubt that this is a proper requirements file
 # Hopefully somebody fixes this. 
-Django==1.10.4
+Django>=1.8
 Markdown==2.6.7
 Pillow==3.4.2
 django-auth-ldap==1.2.8
