@@ -2,10 +2,9 @@ from django.db.models import FileField
 from django import forms
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import ugettext_lazy as _
+
+# no extra kwargs -> good to just comment it out
 # from south.modelsinspector import add_introspection_rules
-
-
-# no kwargs -> good to just comment
 # http://south.readthedocs.io/en/latest/tutorial/part4.html
 # add_introspection_rules([], ["^cred\.fields\.SizedFileField"])
 
