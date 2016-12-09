@@ -4,7 +4,7 @@ from django.forms import ModelForm, SelectMultiple, Select, PasswordInput
 
 import paramiko
 from ssh_key import SSHKey
-from models import Cred, Tag, Group
+from models import Cred, Tag, Group, Extra
 from widgets import CredAttachmentInput, CredIconChooser
 
 
@@ -17,6 +17,12 @@ class ExportForm(forms.Form):
 class TagForm(ModelForm):
     class Meta:
         model = Tag
+        fields = '__all__'
+
+
+class ExtraForm(ModelForm):
+    class Meta:
+        model = Extra
         fields = '__all__'
 
 

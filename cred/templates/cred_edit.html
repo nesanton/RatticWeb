@@ -19,6 +19,15 @@
             </div>
         </div>
     {% endfor %}
+    <strong>{% trans "Extra fields (tag):" %}</strong>
+    <div class="control-group">
+        {% for exf in cred_extra_fields.all %}
+            <label class="control-label" for="extrafields">{{ exf.extra.name }} ({{ exf.extra.tag.name }})</label>
+            <div class="controls">
+                <input id="id_extra_{{ exf.extra.name }}" maxlength="250" name="extra_{{ exf.extra.id }}" type="text" value="{{ exf.value }}"/>
+            </div>
+        {% endfor %}
+    </div>
     <div class="controls">
         <input id="credsave" class="btn btn-primary" type="submit" value="{% trans "Submit" %}" />
     </div>

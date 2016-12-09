@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+    <p><b>{% trans "Deleting Extra Field" %}:</b> {{ extra.name }}</p>
+    <div class="alert alert-warning"><strong>Think twice</strong> This extra field and all its values will be removed from all the individual credentials that have ever had it </div>
+    <input type="submit" value="{% trans "Confirm" %}" />
+</form>
+{% endblock %}
+

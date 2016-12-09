@@ -35,6 +35,11 @@ urlpatterns = [
     url(r'^tag/add/$', cred_views.tagadd, name='tagadd'),
     url(r'^tag/edit/(?P<tag_id>\d+)/$', cred_views.tagedit, name='tagedit'),
     url(r'^tag/delete/(?P<tag_id>\d+)/$', cred_views.tagdelete, name='tagdelete'),
+
+    # Extras
+    url(r'^tag/(?P<tag_id>\d+)/extra$', cred_views.tagextras, name='tagextras'),
+    url(r'^extra/edit/(?P<extra_id>\d+)/$', cred_views.extraedit, name='extraedit'),
+    url(r'^extra/delete/(?P<extra_id>\d+)/$', cred_views.extradelete, name='extradelete'),
 ]
 
 if not settings.RATTIC_DISABLE_EXPORT:

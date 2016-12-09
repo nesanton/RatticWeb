@@ -4,6 +4,7 @@
 {% block content %}
 <form action="" method="post">{% csrf_token %}
     <p><b>{% trans "Deleting tag" %}:</b> {{ t.name }}</p>
+    <div class="alert alert-warning"><strong>Think twice</strong> All the individual credentials will lose all their extra fields associated with this tag </div>
     <input type="submit" value="{% trans "Confirm" %}" />
 </form>
 {% endblock %}

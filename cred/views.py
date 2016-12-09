@@ -8,9 +8,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.translation import ugettext as _
 
-from models import Cred, CredAudit, Tag, CredChangeQ
+from models import Cred, CredAudit, Tag, CredChangeQ, Extra, ExtraField
 from search import cred_search
-from forms import ExportForm, CredForm, TagForm
+from forms import ExportForm, CredForm, TagForm, ExtraForm
 from exporters import export_keepass
 from cred.icon import get_icon_list
 
@@ -307,6 +307,29 @@ def edit(request, cred_id):
     if not cred.is_visible_by(request.user):
         raise Http404
 
+    # generate and save extra fields for all cred's tags if empty
+    # First let's see what Extra fields this cred already has 
+    tags = cred.tags.all()
+    cred_extras = []
+    for exf in cred.extrafields.all():
+        cred_extras.append(exf.extra)
+    # Let's see now what Extra fields are coming with the tags this cred has
+    tag_extras = []
+    for tag in tags:
+        try:
+            tag_extras += Extra.objects.filter(tag=tag.id)
+        except:
+            pass
+    for ex in tag_extras:
+        if not ex in cred_extras:
+            ef = ExtraField(value='', extra=ex)
+            ef.save()
+            cred.extrafields.add(ef)
+            cred.save()
+
+    # We are gonna pass this into templates
+    cred_extra_fields = cred.extrafields.all()
+
     if request.method == 'POST':
         form = CredForm(request.user, request.POST, request.FILES, instance=cred)
 
@@ -324,8 +347,35 @@ def edit(request, cred_id):
             if chgtype == CredAudit.CREDCHANGE:
                 CredChangeQ.objects.filter(cred=cred).delete()
 
+            # Save extra fields
+            post_extra_keys = request.POST.keys()
+            # Quite an ugly way: POST brings the <input> values with names "extra_<extra_id>"
+            post_extra_keys = filter(lambda x: 'extra_' in x, post_extra_keys)
+            new_tag_ids = map(int, request.POST.getlist('tags', default=[]))
+
+            ex_changed = False
+            for ex_key in post_extra_keys:
+                ex_id = ex_key.split('_')[1]
+                e = cred.extrafields.get(extra=int(ex_id))
+                if not e.extra.tag.id in new_tag_ids:
+                    # We need to make sure that if some tags were removed, 
+                    # their extra fields are not saved to this cred
+                    e.delete()
+                else:
+                    new_value = request.POST.get(ex_key, default='')
+                    if new_value != e.value:
+                        ex_changed = True
+                        e.value = new_value
+                        e.save()
+
             # Create audit log
-            CredAudit(audittype=chgtype, cred=cred, user=request.user).save()
+            # Record if extra foelds were changed
+            if ex_changed:
+                CredAudit(audittype=CredAudit.CREDEXTRACHANGE, cred=cred, user=request.user).save()
+                if chgtype != CredAudit.CREDMETACHANGE:
+                    CredAudit(audittype=chgtype, cred=cred, user=request.user).save()
+            else:
+                CredAudit(audittype=chgtype, cred=cred, user=request.user).save() 
             form.save()
 
             # If we dont have anywhere to go, go to the details page
@@ -342,6 +392,7 @@ def edit(request, cred_id):
         'next': next,
         'icons': get_icon_list(),
         'cred': cred,
+        'cred_extra_fields': cred_extra_fields,
     })
 
 
@@ -412,6 +463,40 @@ def tagdelete(request, tag_id):
         tag.delete()
         return HttpResponseRedirect(reverse('tags'))
     return render(request, 'cred_tagdelete.html', {'t': tag})
+
+
+@login_required
+def tagextras(request, tag_id):
+    extras = Extra.objects.filter(tag_id=tag_id)
+    tag_name = Tag.objects.get(id=tag_id)
+    if request.method == 'POST':
+        e = Extra(name=request.POST.get('name'), tag_id=request.POST.get('tag_id'))
+        e.save()
+        return HttpResponseRedirect(reverse('tagextras', kwargs={'tag_id': tag_id}))
+    return render(request, 'cred_tagextras.html', {'extras': extras, 'tag_name': tag_name, 'tag_id': tag_id})
+
+
+@login_required
+def extraedit(request, extra_id):
+    extra = get_object_or_404(Extra, pk=extra_id)
+    if request.method == 'POST':
+        form = ExtraForm(request.POST, instance=extra)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('tagextras', kwargs={'tag_id': extra.tag.id}))
+    else:
+        form = ExtraForm(instance=extra)
+    return render(request, 'cred_extraedit.html', {'form': form})
+
+
+@login_required
+def extradelete(request, extra_id):
+    extra = get_object_or_404(Extra, pk=extra_id)
+    tag_id = extra.tag.id
+    if request.method == 'POST':
+        extra.delete()
+        return HttpResponseRedirect(reverse('tagextras', kwargs={'tag_id': tag_id}))
+    return render(request, 'cred_extradelete.html', {'extra': extra})
 
 
 @login_required
