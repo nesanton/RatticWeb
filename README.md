@@ -1,7 +1,30 @@
+## Changes in this fork
+
+### New Django! Tested with 1.8.17 and 1.10
+
+I'm not an expert in django let alone migrating from 1.6 to 1.8. It's very likely that I've done it in a very wrong way. Be my guest and point it out or, better, fix it. Some things definitely need extra care, e.g. tests. Plus, files are stored in the database using https://github.com/bfirsh/django-database-files which depends on South and is not mainteined for years. Perhaps it makes sense migrating to something like http://django-db-file-storage.readthedocs.io/en/master/.
+
+### Extra Fields
+
+Now each tag can have Extra Fields. Credentials get a set of Extra Fields from tags.
+For example, if you have credentials with tag "VPN" you can add some Extra Fields to this tag, say, "Device Type" and "Tunnel Type". When you edit a particular password entry with tag VPN it'll get these two fields. 
+
+One VPN entry can have:
+
+Device Type | Tunnel Type
+------------|--------------
+cisco 2800 | IPsec
+
+While another:
+
+Device Type | Tunnel Type
+------------|--------------
+Paolo Alto | SSL
+
+
+
 RatticWeb
 =========
-
-Build Status: [![Build Status](https://travis-ci.org/tildaslash/RatticWeb.png?branch=master)](https://travis-ci.org/tildaslash/RatticWeb)
 
 RatticWeb is the website part of the Rattic password management solution, which allows you to easily manage your users and passwords.
 
