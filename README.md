@@ -7,25 +7,30 @@ I'm not an expert in django let alone migrating from 1.6 to 1.8. It's very likel
 ### Extra Fields
 
 Now each tag can have Extra Fields. Credentials get a set of Extra Fields from tags.
-For example, if you have credentials with tag "VPN" you can add some Extra Fields to this tag, say, "Device Type" and "Tunnel Type". When you edit a particular password entry with tag VPN it'll get these two fields. 
+For example, if you have credentials with tag "email_account" you can add some Extra Fields to this tag, say, "Aliases" and "Distribution lists". When you edit a particular password entry with tag email_accounts it'll get these fields: 
 
-One VPN entry can have:
+Access tag's extra fields:
+![tag_list](https://cloud.githubusercontent.com/assets/13673718/21100388/10fb8510-c074-11e6-8486-c8e3c960c6fa.jpg)
 
-Device Type | Tunnel Type
-------------|--------------
-cisco 2800 | IPsec
+Edit them:
+![extra_add](https://cloud.githubusercontent.com/assets/13673718/21100386/10fae394-c074-11e6-88ee-1f59597ba5ee.jpg)
 
-While another:
+Delete extra fields from a tag:
+![extra_delete](https://cloud.githubusercontent.com/assets/13673718/21100387/10fb24f8-c074-11e6-8763-444dc409a022.jpg)
 
-Device Type | Tunnel Type
-------------|--------------
-Paolo Alto | SSL
+Edit password entry:
+
+![cred_edit](https://cloud.githubusercontent.com/assets/13673718/21100385/10faedf8-c074-11e6-8d09-97078483a182.jpg)
+
+View password entry:
+![cred_details](https://cloud.githubusercontent.com/assets/13673718/21100384/10fa3278-c074-11e6-8020-de096f90cabe.jpg)
 
 ### Issues
 
 * Tests need fixing
 * social_auth did not fly well, so it's commented out in settings.py
 * requirements files are not to be trusted. You should be good to go if you can lay hands on versions from the requirements-base.txt
+* Extra fields do not appear in cred_edit and cred_detail views in web2.0 way. Click "edit" in cred_detail and extra fields from current tags are added with empty values. "submit" in cred_edit does the same if tags were added/deleted duting editing.
 
 RatticWeb
 =========
