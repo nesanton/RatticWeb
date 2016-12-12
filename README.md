@@ -2,7 +2,7 @@
 
 ### New Django! Tested with 1.8.17 and 1.10
 
-I'm not an expert in django let alone migrating from 1.6 to 1.8. It's very likely that I've done it in a very wrong way. Be my guest and point it out or, better, fix it. Some things definitely need extra care, e.g. tests. Plus, files are stored in the database using https://github.com/bfirsh/django-database-files which depends on South and is not mainteined for years. Perhaps it makes sense migrating to something like http://django-db-file-storage.readthedocs.io/en/master/.
+I'm not an expert in django let alone migrating from 1.6 to 1.8. It's very likely that I've done it in a very wrong way. Be my guest and point it out or, better, fix it. Some things definitely need extra care, e.g. tests. Plus, files are stored in the database using https://github.com/bfirsh/django-database-files which is not mainteined for years. Perhaps it makes sense migrating to something like http://django-db-file-storage.readthedocs.io/en/master/.
 
 ### Extra Fields
 
@@ -21,7 +21,11 @@ Device Type | Tunnel Type
 ------------|--------------
 Paolo Alto | SSL
 
+### Issues
 
+* Tests need fixing
+* social_auth did not fly well, so it's commented out in settings.py
+* requirements files are not to be trusted. You should be good to go if you can lay hands on versions from the requirements-base.txt
 
 RatticWeb
 =========
