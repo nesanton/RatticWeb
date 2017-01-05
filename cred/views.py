@@ -285,8 +285,24 @@ def add(request):
         form = CredForm(request.user, request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            CredAudit(audittype=CredAudit.CREDADD, cred=form.instance, user=request.user).save()
-            return HttpResponseRedirect(reverse('list'))
+            cred = form.instance
+
+            # add empty extra fields before saving
+            tags = cred.tags.all()
+            tag_extras = []
+            for tag in tags:
+                try:
+                    tag_extras += Extra.objects.filter(tag=tag.id)
+                except:
+                    pass
+            for ex in tag_extras:
+                ef = ExtraField(value='', extra=ex)
+                ef.save()
+                cred.extrafields.add(ef)
+                cred.save()
+
+            CredAudit(audittype=CredAudit.CREDADD, cred=cred, user=request.user).save()
+            return HttpResponseRedirect(reverse('detail', args=(cred.pk,)))
     else:
         form = CredForm(request.user)
 
