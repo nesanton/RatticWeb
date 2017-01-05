@@ -96,11 +96,11 @@
   <pre>{{ cred.description }}</pre>
 {% endif %}
 
-<strong>{% trans "Extra fields:" %}</strong>
+<strong>{% trans "Extra fields (tag):" %}</strong>
 <table class="table table-striped table-bordered table-condensed">
 {% for e in cred.extrafields.all %}
 <tr>
-  <th>{{ e.extra.name }}</th>
+  <th>{{ e.extra.name }} ({{ e.extra.tag.name }})</th>
   <td>
     {{ e.value }}
   </td>
