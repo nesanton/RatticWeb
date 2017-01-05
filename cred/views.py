@@ -295,6 +295,15 @@ def add(request):
 
 
 @login_required
+def copy(request, cred_id):
+    cred = Cred.objects.get(pk=cred_id)
+    cred.pk = None
+    cred.title = cred.title + ' COPY'
+    cred.save()
+    return HttpResponseRedirect(reverse('edit', args=(cred.id,)))
+
+
+@login_required
 def edit(request, cred_id):
     cred = get_object_or_404(Cred, pk=cred_id)
 

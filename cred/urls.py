@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^detail/(?P<cred_id>\d+)/download/$', cred_views.downloadattachment, name='downloadattachment'),
     url(r'^detail/(?P<cred_id>\d+)/ssh_key/$', cred_views.downloadsshkey, name='downloadsshkey'),
     url(r'^edit/(?P<cred_id>\d+)/$', cred_views.edit, name='edit'),
+    url(r'^copy/(?P<cred_id>\d+)/$', cred_views.copy, name='copy'),
     url(r'^delete/(?P<cred_id>\d+)/$', cred_views.delete, name='delete'),
     url(r'^add/$', cred_views.add, name='add'),
 

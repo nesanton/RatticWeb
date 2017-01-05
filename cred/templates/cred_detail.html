@@ -37,6 +37,7 @@
     {% if cred.is_deleted and not undelete %}
     <a class="btn btn-success" href="{% url 'credundelete' cred.id %}">{% trans "Undelete" %}</a>
     {% endif %}
+    <a class="btn" href="{% url 'copy' cred.id %}">{% trans "Copy" %}</a>
 </div>
 <p></p>
 {% endif %}
