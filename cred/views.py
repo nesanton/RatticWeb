@@ -313,8 +313,17 @@ def add(request):
 @login_required
 def copy(request, cred_id):
     cred = Cred.objects.get(pk=cred_id)
+    tags = cred.tags.all()
+    efields = cred.extrafields.all()
     cred.pk = None
     cred.title = cred.title + ' COPY'
+    cred.save()
+    for tag in tags:
+        cred.tags.add(tag)
+    for efield in efields:
+        ef = ExtraField(value=efield.value, extra=efield.extra)
+        ef.save()
+        cred.extrafields.add(ef)
     cred.save()
     return HttpResponseRedirect(reverse('edit', args=(cred.id,)))
 
