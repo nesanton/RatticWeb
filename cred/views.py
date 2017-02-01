@@ -314,10 +314,13 @@ def add(request):
 def copy(request, cred_id):
     cred = Cred.objects.get(pk=cred_id)
     tags = cred.tags.all()
+    groups = cred.groups.all()
     efields = cred.extrafields.all()
     cred.pk = None
     cred.title = cred.title + ' COPY'
     cred.save()
+    for group in groups:
+        cred.groups.add(group)
     for tag in tags:
         cred.tags.add(tag)
     for efield in efields:
