@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 
-from models import Cred, CredChangeQ, Tag
+from models import Cred, CredChangeQ, Tag, ExtraField
 
 
 # TODO: Move this to a ModelManager
@@ -27,7 +27,9 @@ def cred_search(user, cfilter='special', value='all', sortdir='ascending', sort=
 
     # Standard search, substring in title
     elif cfilter == 'search':
-        cred_list = cred_list.filter(title__icontains=value)
+        search_tags = Tag.objects.filter(name__icontains=value)
+        search_exfields = ExtraField.objects.filter(value__icontains=value)
+        cred_list = cred_list.filter(Q(tags=search_tags) | Q(extrafields=search_exfields) | Q(title__icontains=value) | Q(description__icontains=value))
         search_object = value
 
     # Search for the history of a cred
