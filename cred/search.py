@@ -28,10 +28,9 @@ def cred_search(user, cfilter='special', value='all', sortdir='ascending', sort=
     # User based searching
     elif cfilter == 'user':
         user_q = get_object_or_404(User, pk=value)
-        if user.is_staff:
-            cred_list = cred_list.filter(Q(users=user_q))
-        else:
-            cred_list = cred_list.filter(Q(users=user_q) & Q(users=user))
+        if not user.is_staff and user_q.id != user.id:
+            raise Http404
+        cred_list = cred_list.filter(Q(users=user_q) | Q(groups__in=user_q.groups.all()) | Q(group__in=user_q.groups.all()))
         search_object = user_q
 
     # Standard search, substring in title
