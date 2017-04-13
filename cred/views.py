@@ -81,6 +81,7 @@ def list(request, cfilter='special', value='all', sortdir='ascending', sort='tit
         'sortdir': unicode(sortdir).lower(),
         'page': unicode(page).lower(),
         'groups': request.user.groups,
+        'user': request.user,
 
         # Default buttons
         'buttons': {
@@ -110,6 +111,10 @@ def list(request, cfilter='special', value='all', sortdir='ascending', sort='tit
 
     elif cfilter == 'group':
         viewdict['credtitle'] = _('Passwords in group %(groupname)s') % {'groupname': search_object.name, }
+        viewdict['buttons']['export'] = True
+
+    elif cfilter == 'user':
+        viewdict['credtitle'] = _('Passwords visible by %(username)s') % {'username': search_object.username, }
         viewdict['buttons']['export'] = True
 
     elif cfilter == 'search':
@@ -219,6 +224,7 @@ def detail(request, cred_id):
         'morelink': morelink,
         'readonly': readonly,
         'groups': request.user.groups,
+        'user': request.user,
     })
 
 

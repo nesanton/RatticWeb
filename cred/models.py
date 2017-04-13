@@ -52,6 +52,7 @@ class SearchManager(models.Manager):
             qs = qs.filter(latest=None)
 
         qs = qs.filter(Q(group__in=usergroups)
+                     | Q(users__in=[user, ])
                      | Q(latest__group__in=usergroups)
                      | Q(groups__in=usergroups)
                      | Q(latest__groups__in=usergroups)).distinct()
@@ -193,7 +194,7 @@ class Cred(models.Model):
             return True
 
         # If its the latest and (in your group or it belongs to a viewer group you also belong to) you can see it
-        if not self.is_deleted and self.latest is None and (self.group in user.groups.all() or any([g in user.groups.all() for g in self.groups.all()])):
+        if not self.is_deleted and self.latest is None and ((self.group in user.groups.all() or any([g in user.groups.all() for g in self.groups.all()])) or (user in self.users.all())):
             return True
 
         # If the latest is in your group you can see it

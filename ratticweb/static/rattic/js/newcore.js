@@ -673,6 +673,16 @@ var RATTIC = (function ($, ZeroClipboard) {
     });
   };
 
+  /* Make the User select boxes be awesome */
+  my.controls.userSelectors = function (selectors) {
+    selectors.selectize({
+      valueField: 'id',
+      labelField: 'username',
+      searchField: 'username',
+      plugins: ['remove_button'],
+    });
+  };
+
   /* Make the tag select boxes be awesome */
   my.controls.groupSelectors = function (selectors) {
     var options = {
@@ -763,6 +773,9 @@ $(document).ready(function () {
 
   // A Group selector that will create for staff members
   RATTIC.controls.groupSelectors($('.rattic-group-selector'));
+
+  // A User selector
+  RATTIC.controls.userSelectors($('.rattic-user-selector'));
 
   // Button that submits a form indicated by a data attribute
   RATTIC.controls.formSubmitById($('.rattic-form-submit-by-id'));

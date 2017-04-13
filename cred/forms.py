@@ -38,7 +38,8 @@ class CredForm(ModelForm):
         self.fields['group'].queryset = Group.objects.filter(user=requser)
 
         self.fields['group'].label = _('Owner Group')
-        self.fields['groups'].label = _('Viewers Groups')
+        self.fields['groups'].label = _('Viewer Groups')
+        self.fields['users'].label = _('Viewer Users')
 
         # Make the URL invalid message a bit more clear
         self.fields['url'].error_messages['invalid'] = _("Please enter a valid HTTP/HTTPS URL")
@@ -72,6 +73,7 @@ class CredForm(ModelForm):
             'tags': SelectMultiple(attrs={'class': 'rattic-tag-selector'}),
             'group': Select(attrs={'class': 'rattic-group-selector'}),
             'groups': SelectMultiple(attrs={'class': 'rattic-group-selector'}),
+            'users': SelectMultiple(attrs={'class': 'rattic-user-selector'}),
             'password': PasswordInput(render_value=True, attrs={'class': 'btn-password-generator btn-password-visibility'}),
             'ssh_key': CredAttachmentInput,
             'attachment': CredAttachmentInput,

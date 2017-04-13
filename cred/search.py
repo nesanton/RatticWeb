@@ -25,6 +25,15 @@ def cred_search(user, cfilter='special', value='all', sortdir='ascending', sort=
         cred_list = cred_list.filter(Q(group=group) | Q(groups=group))
         search_object = group
 
+    # User based searching
+    elif cfilter == 'user':
+        user_q = get_object_or_404(User, pk=value)
+        if user.is_staff:
+            cred_list = cred_list.filter(Q(users=user_q))
+        else:
+            cred_list = cred_list.filter(Q(users=user_q) & Q(users=user))
+        search_object = user_q
+
     # Standard search, substring in title
     elif cfilter == 'search':
         search_tags = Tag.objects.filter(name__icontains=value)
