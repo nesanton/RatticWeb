@@ -1,7 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.forms import ModelForm, SelectMultiple, Select, PasswordInput
-
+from django.contrib.auth.models import User
+from django.db.models import Q
 import paramiko
 from ssh_key import SSHKey
 from models import Cred, Tag, Group, Extra
@@ -42,6 +43,8 @@ class CredForm(ModelForm):
             self.fields['groups'].queryset = Group.objects.filter(user=requser)
             # If user is not staff limit the tags options to tags that the user already sees
             self.fields['tags'].queryset = Tag.objects.visible(requser)
+            # If user is not staff limit the viewer users options to user's groupmates
+            self.fields['users'].queryset = User.objects.filter(Q(groups__in=requser.groups.all()))
 
         self.fields['group'].label = _('Owner Group')
         self.fields['groups'].label = _('Viewer Groups')

@@ -664,13 +664,19 @@ var RATTIC = (function ($, ZeroClipboard) {
 
   /* Make the tag select boxes be awesome */
   my.controls.tagSelectors = function (selectors) {
-    selectors.selectize({
+    var options = {
       valueField: 'id',
       labelField: 'name',
       searchField: 'name',
-      plugins: ['remove_button'],
-      create: _newTagEntered
-    });
+      plugins: ['remove_button']
+    };
+
+      /* Staff members can create groups */
+      if (my.page.getMetaInfo('user_staff') == 'true') {
+        options.create = _newTagEntered;
+      }
+
+    selectors.selectize(options);
   };
 
   /* Make the User select boxes be awesome */
