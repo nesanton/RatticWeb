@@ -37,6 +37,12 @@ class CredForm(ModelForm):
         # Limit the group options to groups that the user is in
         self.fields['group'].queryset = Group.objects.filter(user=requser)
 
+        if not requser.is_staff:
+            # If user is not staff limit the groups options to groups that the user is in
+            self.fields['groups'].queryset = Group.objects.filter(user=requser)
+            # If user is not staff limit the tags options to tags that the user already sees
+            self.fields['tags'].queryset = Tag.objects.visible(requser)
+
         self.fields['group'].label = _('Owner Group')
         self.fields['groups'].label = _('Viewer Groups')
         self.fields['users'].label = _('Viewer Users')

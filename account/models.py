@@ -62,6 +62,10 @@ class UserProfile(models.Model):
 
 
 class UserProfileForm(ModelForm):
+    def __init__(self, requser, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        self.fields['favourite_tags'].queryset = Tag.objects.visible(requser)
+
     class Meta:
         model = UserProfile
         exclude = ('user', 'password_changed',)

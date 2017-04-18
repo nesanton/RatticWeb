@@ -16,12 +16,10 @@ from storage import CredAttachmentStorage
 class TagSearchManager(models.Manager):
     def visible(self, user):
         cred_list = Cred.objects.visible(user)
-        tag_list = []
-        for cred in cred_list:
-            tag_list += cred.tags.all()
         qs = super(TagSearchManager, self).get_queryset()
-
-        return tag_list if not user.is_staff else qs
+        if not user.is_staff:
+            qs = qs.filter(Q(id__in=cred_list.values('tags')))
+        return qs
 
 
 class Tag(models.Model):

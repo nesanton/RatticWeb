@@ -52,11 +52,11 @@ def profile(request):
 
     # Process the form if we have data coming in
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=request.user.profile)
+        form = UserProfileForm(request.user, request.POST, instance=request.user.profile)
         if form.is_valid():
             form.save()
     else:
-        form = UserProfileForm(instance=request.user.profile)
+        form = UserProfileForm(request.user, instance=request.user.profile)
 
     # Show the template
     return render(request, 'account_profile.html', {
