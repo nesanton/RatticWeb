@@ -476,6 +476,8 @@ def search(request):
 
 @login_required
 def tagadd(request):
+    if not request.user.is_staff:
+        raise Http404
     if request.method == 'POST':
         form = TagForm(request.POST)
         if form.is_valid():
