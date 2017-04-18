@@ -13,7 +13,19 @@ from fields import SizedFileField
 from storage import CredAttachmentStorage
 
 
+class TagSearchManager(models.Manager):
+    def visible(self, user):
+        cred_list = Cred.objects.visible(user)
+        tag_list = []
+        for cred in cred_list:
+            tag_list += cred.tags.all()
+        qs = super(TagSearchManager, self).get_queryset()
+
+        return tag_list if not user.is_staff else qs
+
+
 class Tag(models.Model):
+    objects = TagSearchManager()
     name = models.CharField(max_length=64, unique=True)
 
     def __unicode__(self):
@@ -21,6 +33,13 @@ class Tag(models.Model):
 
     def visible_count(self, user):
         return Cred.objects.visible(user).filter(tags=self).count()
+
+    def is_visible_by(self, user):
+        if user.is_staff:
+            return True
+        if self in Tag.objects.visible(user):
+            return True
+        return False
 
 
 class Extra(models.Model):

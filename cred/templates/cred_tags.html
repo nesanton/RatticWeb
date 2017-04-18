@@ -4,7 +4,7 @@
 {% block content %}
 
 <h1>{% trans "All Tags" %}</h1>
-{% include "cred_taglist.html" with tags=tags only %}
+{% include "cred_taglist.html" with tags=tags user=user only %}
 
 {% endblock %}
 

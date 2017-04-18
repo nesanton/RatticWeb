@@ -190,9 +190,11 @@ def list(request, cfilter='special', value='all', sortdir='ascending', sort='tit
 @login_required
 def tags(request):
     tags = {}
-    for t in Tag.objects.all():
+    for t in Tag.objects.visible(request.user):
         tags[t] = t.visible_count(request.user)
-    return render(request, 'cred_tags.html', {'tags': tags})
+    return render(request, 'cred_tags.html', {'tags': tags,
+                                              'user': request.user,
+                                              })
 
 
 @login_required
@@ -488,6 +490,8 @@ def tagadd(request):
 @login_required
 def tagedit(request, tag_id):
     tag = get_object_or_404(Tag, pk=tag_id)
+    if not request.user.is_staff:
+        raise Http404
     if request.method == 'POST':
         form = TagForm(request.POST, instance=tag)
         if form.is_valid():
@@ -502,6 +506,8 @@ def tagedit(request, tag_id):
 @login_required
 def tagdelete(request, tag_id):
     tag = get_object_or_404(Tag, pk=tag_id)
+    if not request.user.is_staff:
+        raise Http404
     if request.method == 'POST':
         tag.delete()
         return HttpResponseRedirect(reverse('tags'))
@@ -510,6 +516,8 @@ def tagdelete(request, tag_id):
 
 @login_required
 def tagextras(request, tag_id):
+    if not request.user.is_staff:
+        raise Http404
     extras = Extra.objects.filter(tag_id=tag_id)
     tag_name = Tag.objects.get(id=tag_id)
     if request.method == 'POST':
@@ -521,6 +529,8 @@ def tagextras(request, tag_id):
 
 @login_required
 def extraedit(request, extra_id):
+    if not request.user.is_staff:
+        raise Http404
     extra = get_object_or_404(Extra, pk=extra_id)
     if request.method == 'POST':
         form = ExtraForm(request.POST, instance=extra)
@@ -534,6 +544,8 @@ def extraedit(request, extra_id):
 
 @login_required
 def extradelete(request, extra_id):
+    if not request.user.is_staff:
+        raise Http404
     extra = get_object_or_404(Extra, pk=extra_id)
     tag_id = extra.tag.id
     if request.method == 'POST':
