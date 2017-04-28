@@ -20,6 +20,18 @@
 </div>
 
 <h2>{% trans "Users" %}</h2>
+{% if LDAP_ENABLED %}
+    <form class="form-horizontal" enctype="multipart/form-data" autocomplete="off" action="" method="post">{% csrf_token %}
+            <strong> {% trans "Populate an LDAP user" %} </strong>
+            <input id="ldapusername" maxlength="250" name="username"  value=""/>
+            <input class="btn rattic-form-submit" type="submit" value="{% trans "Populate" %}">
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+    </form>
+{% endif %}
 <table class="table table-striped table-bordered table-condensed">
   <tr>
     <th>{% trans "Username" %}</th>

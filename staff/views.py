@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, Http404
 from django.views.generic.edit import UpdateView, FormView
 from django.utils.decorators import method_decorator
+from django.contrib import messages
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -25,6 +26,18 @@ from decorators import rattic_staff_required
 def home(request):
     userlist = User.objects.all()
     grouplist = Group.objects.all()
+    if request.method == 'POST':
+        # LDAP is enabled and somebody wants to populate a user into rattic
+        username = request.POST.get('username')
+        if settings.LDAP_ENABLED and settings.USE_LDAP_GROUPS:
+            from django_auth_ldap.backend import LDAPBackend
+            popuser = LDAPBackend().populate_user(username)
+            #return render(request, 'staff_home.html', {'userlist': userlist, 'grouplist': grouplist, 'popuser': popuser})
+            if popuser:
+                messages.success(request, '{popuser} was populated successfully'.format(popuser=popuser))
+            else:
+                messages.error(request, '{username} was not found'.format(username=username))
+            return HttpResponseRedirect(reverse('staff_home'))
     return render(request, 'staff_home.html', {'userlist': userlist, 'grouplist': grouplist})
 
 
