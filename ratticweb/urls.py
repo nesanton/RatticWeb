@@ -7,8 +7,8 @@ from staff.api import GroupResource
 from django.conf import settings
 
 # Configure the error handlers
-handler500 = 'ratticweb_views.handle500'
-handler404 = 'ratticweb_views.handle404'
+handler500 = ratticweb_views.handle500
+handler404 = ratticweb_views.handle404
 
 # Setup the API
 v1_api = Api(api_name='v1')
