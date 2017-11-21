@@ -248,7 +248,7 @@ def downloadattachment(request, cred_id, typ="attachment"):
 
     # Send the result back in a way that prevents the browser from executing it,
     # forces a download, and names it the same as when it was uploaded.
-    response = HttpResponse(mimetype='application/octet-stream')
+    response = HttpResponse(content_type='application/octet-stream')
     response.write(getattr(cred, typ).read())
     response['Content-Disposition'] = 'attachment; filename="%s"' % getattr(cred, "%s_name" % typ)
     response['Content-Length'] = response.tell()
